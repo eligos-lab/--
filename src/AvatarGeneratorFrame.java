@@ -4,8 +4,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
 public class AvatarGeneratorFrame extends JFrame {
@@ -15,7 +13,6 @@ public class AvatarGeneratorFrame extends JFrame {
     private AvatarPanel avatarPanel;
     private SettingsPanel settingsPanel;
     private ControlPanel controlPanel;
-    private PreviewPanel previewPanel;
 
     private BufferedImage currentAvatar;
     private SaveButtonListener saveButtonListener;
@@ -33,19 +30,19 @@ public class AvatarGeneratorFrame extends JFrame {
         avatarPanel = new AvatarPanel();
         settingsPanel = new SettingsPanel();
         controlPanel = new ControlPanel();
-        previewPanel = new PreviewPanel();
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout(10, 10));
 
+        // Левая панель - только аватар
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setPreferredSize(new Dimension(350, 400));
+        leftPanel.setPreferredSize(new Dimension(400, 500));
         leftPanel.add(avatarPanel, BorderLayout.CENTER);
-        leftPanel.add(previewPanel, BorderLayout.SOUTH);
 
+        // Правая панель - настройки и управление
         JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.setPreferredSize(new Dimension(300, 400));
+        rightPanel.setPreferredSize(new Dimension(300, 500));
         rightPanel.add(settingsPanel, BorderLayout.CENTER);
         rightPanel.add(controlPanel, BorderLayout.SOUTH);
 
@@ -78,7 +75,6 @@ public class AvatarGeneratorFrame extends JFrame {
                     public void onColorSelected(Color color) {
                         settingsPanel.setBackgroundColor(color);
                         avatarConfig.setBackgroundColor(color);
-                        updatePreview();
                         regenerateAvatarIfExists();
                     }
                 }));
@@ -89,7 +85,6 @@ public class AvatarGeneratorFrame extends JFrame {
                     public void onColorSelected(Color color) {
                         settingsPanel.setTextColor(color);
                         avatarConfig.setTextColor(color);
-                        updatePreview();
                         regenerateAvatarIfExists();
                     }
                 }));
@@ -108,7 +103,6 @@ public class AvatarGeneratorFrame extends JFrame {
                     public void onAvatarGenerated(BufferedImage avatar) {
                         currentAvatar = avatar;
                         avatarPanel.setAvatar(avatar);
-                        updatePreviewWithImage(avatar);
                         // Обновляем аватар в слушателе сохранения
                         if (saveButtonListener != null) {
                             saveButtonListener.setAvatar(avatar);
@@ -186,7 +180,7 @@ public class AvatarGeneratorFrame extends JFrame {
         });
     }
 
-    // Новый метод для перегенерации аватара если он уже существует
+    // Метод для перегенерации аватара если он уже существует
     private void regenerateAvatarIfExists() {
         if (currentAvatar != null && avatarConfig.getName() != null && !avatarConfig.getName().trim().isEmpty()) {
             new SwingWorker<BufferedImage, Void>() {
@@ -201,7 +195,6 @@ public class AvatarGeneratorFrame extends JFrame {
                         BufferedImage newAvatar = get();
                         currentAvatar = newAvatar;
                         avatarPanel.setAvatar(newAvatar);
-                        updatePreviewWithImage(newAvatar);
                         // Обновляем аватар в слушателе сохранения
                         if (saveButtonListener != null) {
                             saveButtonListener.setAvatar(newAvatar);
@@ -222,29 +215,6 @@ public class AvatarGeneratorFrame extends JFrame {
         avatarConfig.setFormat(settingsPanel.getFormat());
         avatarConfig.setBold(settingsPanel.isBold());
         avatarConfig.setRounded(settingsPanel.isRounded());
-
-        updatePreview();
-    }
-
-    private void updatePreview() {
-        String name = settingsPanel.getName();
-        if (name != null && !name.trim().isEmpty()) {
-            try {
-                String initials = NameUtils.extractInitials(name);
-                previewPanel.setPreviewText("Инициалы: " + initials);
-            } catch (Exception e) {
-                previewPanel.setPreviewText("Ошибка в имени");
-            }
-        } else {
-            previewPanel.setPreviewText("Введите имя для предпросмотра");
-        }
-    }
-
-    private void updatePreviewWithImage(BufferedImage image) {
-        if (image != null) {
-            Image scaledImage = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-            previewPanel.setPreviewImage(new ImageIcon(scaledImage));
-        }
     }
 
     private void clearAll() {
@@ -254,7 +224,6 @@ public class AvatarGeneratorFrame extends JFrame {
         settingsPanel.setTextColor(avatarConfig.getTextColor());
         currentAvatar = null;
         avatarPanel.clearAvatar();
-        previewPanel.clearPreview();
         controlPanel.setSaveEnabled(false);
 
         // Сбрасываем аватар в слушателе сохранения

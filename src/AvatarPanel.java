@@ -8,7 +8,7 @@ public class AvatarPanel extends JPanel {
 
     public AvatarPanel() {
         this.placeholderText = "Аватар";
-        setPreferredSize(new Dimension(300, 300));
+        setPreferredSize(new Dimension(400, 400)); // Увеличили размер
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
     }
@@ -31,16 +31,17 @@ public class AvatarPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (avatar != null) {
-            int size = Math.min(getWidth(), getHeight()) - 20;
+            int size = Math.min(getWidth(), getHeight()) - 40; // Увеличили отступ
             int x = (getWidth() - size) / 2;
             int y = (getHeight() - size) / 2;
             g2d.drawImage(avatar, x, y, size, size, this);
         } else {
+            // Рисуем placeholder
             g2d.setColor(Color.LIGHT_GRAY);
-            g2d.fillRect(10, 10, getWidth() - 20, getHeight() - 20);
+            g2d.fillRect(20, 20, getWidth() - 40, getHeight() - 40); // Увеличили отступ
 
             g2d.setColor(Color.DARK_GRAY);
-            g2d.setFont(new Font("Arial", Font.BOLD, 16));
+            g2d.setFont(new Font("Arial", Font.BOLD, 18)); // Увеличили шрифт
             FontMetrics fm = g2d.getFontMetrics();
             int textWidth = fm.stringWidth(placeholderText);
             int textHeight = fm.getHeight();

@@ -21,7 +21,7 @@ public class SettingsPanel extends JPanel {
 
     private void initComponents() {
         // Широкое поле для имени - увеличиваем количество колонок
-        nameField = new JTextField(25); // Было 20, стало 25 (шире)
+        nameField = new JTextField(25);
         nameField.setFont(new Font("Arial", Font.PLAIN, 12));
 
         String[] sizes = {"64", "128", "256", "512"};
@@ -81,9 +81,9 @@ public class SettingsPanel extends JPanel {
         gbc.gridx = 0; gbc.gridy = 0;
         add(new JLabel("Имя:"), gbc);
         gbc.gridx = 1; gbc.gridwidth = 2;
-        gbc.weightx = 1.0; // Разрешаем растягиваться
+        gbc.weightx = 1.0;
         add(nameField, gbc);
-        gbc.weightx = 0.0; // Сбрасываем для следующих элементов
+        gbc.weightx = 0.0;
 
         // Размер
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 1;
@@ -175,6 +175,10 @@ public class SettingsPanel extends JPanel {
     }
 
     public String getName() {
+        // Защита от NPE - проверяем, что nameField инициализирован
+        if (nameField == null) {
+            return "";
+        }
         return nameField.getText().trim();
     }
 
